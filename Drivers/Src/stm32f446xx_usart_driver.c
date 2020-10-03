@@ -51,7 +51,7 @@ void usart_peripheral_clk(usartx_reg_def_t* pusartx, uint8_t enordi) {
 }
 
 
-void usart_init(usart_handle_t* pusart_handle){
+void usart_init(usart_handle_t* pusart_handle) {
     uint32_t tempreg=0;
 
     /******************************** Configuration of CR1******************************************/
@@ -75,7 +75,7 @@ void usart_init(usart_handle_t* pusart_handle){
     }
 
     //Step 3: Implement Word length configuration
-    tempreg |= pusart_handle->usart_config.word_len << USART_CR1_M ;
+    tempreg |= pusart_handle->usart_config.word_len << USART_CR1_M;
 
     //Step 4: Configuration of parity control bit fields
     if (pusart_handle->usart_config.parity_ctrl == USART_PARITY_EN_EVEN) {
@@ -182,7 +182,7 @@ void usart_tx(usart_handle_t* pusart_handle, uint8_t *ptxbuffer, uint32_t len) {
 
 void usart_rx(usart_handle_t* pusart_handle, uint8_t *prxbuffer, uint32_t len) {
     //Loop over until "Len" number of bytes are transferred
-	char check_character;
+	//char check_character;
 	//memset(prxbuffer, 0, 1024);
     for(uint32_t i = 0 ; i < len; i++) {
 	//do {
@@ -197,7 +197,6 @@ void usart_rx(usart_handle_t* pusart_handle, uint8_t *prxbuffer, uint32_t len) {
                 //No parity is used , so all 9bits will be of user data
                 //read only first 9 bits so mask the DR with 0x01FF
                 *((uint16_t*) prxbuffer) = (pusart_handle->pusartx->dr  & (uint16_t)0x01FF);
-                check_character = *prxbuffer;
                 //Now increment the prxbuffer two times
                 prxbuffer++;
                 prxbuffer++;
@@ -205,7 +204,6 @@ void usart_rx(usart_handle_t* pusart_handle, uint8_t *prxbuffer, uint32_t len) {
             else {
                 //Parity is used, so 8bits will be of user data and 1 bit is parity
                  *prxbuffer = (pusart_handle->pusartx->dr  & (uint8_t)0xFF);
-                 check_character = *prxbuffer;
                  prxbuffer++;
             }
         }
@@ -216,24 +214,22 @@ void usart_rx(usart_handle_t* pusart_handle, uint8_t *prxbuffer, uint32_t len) {
                 //No parity is used , so all 8bits will be of user data
                 //read 8 bits from DR
                  *prxbuffer = (uint8_t) (pusart_handle->pusartx->dr  & (uint8_t)0xFF);
-                 check_character = *prxbuffer;
+
             }
             else {
                 //Parity is used, so , 7 bits will be of user data and 1 bit is parity
                 //read only 7 bits , hence mask the DR with 0X7F
                  *prxbuffer = (uint8_t) (pusart_handle->pusartx->dr  & (uint8_t)0x7F);
-                 check_character = *prxbuffer;
+
             }
             //Now , increment the prxbuffer
             prxbuffer++;
         }
-    }// while(check_character != '\r');//0xd
-    
-   // *prxbuffer = '\n';
+    }
 }
 
 
-uint32_t usart_tx_it(usart_handle_t* pusart_handle, uint8_t *ptxbuffer, uint32_t len){
+uint8_t usart_tx_it(usart_handle_t* pusart_handle, uint8_t *ptxbuffer, uint32_t len){
     uint8_t txstate = pusart_handle->tx_busystate;
     if(txstate != USART_BUSY_IN_TX) {
         pusart_handle->tx_bufflen = len;
@@ -250,7 +246,7 @@ uint32_t usart_tx_it(usart_handle_t* pusart_handle, uint8_t *ptxbuffer, uint32_t
 }
 
 
-uint32_t usart_rx_it(usart_handle_t* pusart_handle, uint8_t *prxbuffer, uint32_t len){
+uint8_t usart_rx_it(usart_handle_t* pusart_handle, uint8_t *prxbuffer, uint32_t len){
     uint8_t rxstate = pusart_handle->rx_busystate;
 
     if(rxstate != USART_BUSY_IN_RX) {
@@ -645,5 +641,7 @@ void usart_set_baud_rate(usartx_reg_def_t *pusartx, uint32_t baudrate){
 /*
  * Application Callbacks
  */
-void usart_application_event_callback(usart_handle_t *pusart_handle,uint8_t app_ev);
+__weak void usart_application_event_callback(usart_handle_t *pusart_handle,uint8_t app_ev){
+
+}
 

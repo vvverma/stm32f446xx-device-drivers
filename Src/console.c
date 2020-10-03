@@ -63,8 +63,8 @@ void getline(char* rstring){
 	count = 0;
 
 	while((curr_char = getchars())!= '\r'){
-		putchars(curr_char);
         if(curr_char == '\b'){
+        	putchars(curr_char);
             curr_char = ' ';
             putchars(curr_char);
             curr_char = '\b';
@@ -75,7 +75,49 @@ void getline(char* rstring){
             	listPtr = temp;
             }
         }
+        else if (curr_char == '\e') {
+        	//add functionality in driver to peek or to check if more characters on bus to fix ESC
+        	//if (usart_get_status_flag(usart1_handle.pusartx ,USART_FLAG_RXNE)){
+        	    curr_char = getchars();
+        	    curr_char = getchars();
+        	    if (curr_char == 'A') { //Up Arrow
+        	    	usart_tx(&usart1_handle,(uint8_t*)"\e[A",3);
+				}
+				else if (curr_char == 'B') { //Down Arrow
+					usart_tx(&usart1_handle,(uint8_t*)"\e[B",3);
+				}
+				else if (curr_char == 'C') { //Right Arrow
+					usart_tx(&usart1_handle,(uint8_t*)"\e[C",3);
+				}
+				else if (curr_char == 'D') { //Left Arrow
+					usart_tx(&usart1_handle,(uint8_t*)"\e[D",3);
+				}
+				else if (curr_char == 'H') { //Home
+					usart_tx(&usart1_handle,(uint8_t*)"\e[H",3);
+				}
+				else if (curr_char == 'F') { //End
+					usart_tx(&usart1_handle,(uint8_t*)"\e[F",3);
+				}
+				else if (curr_char == '2') { //Insert                 /*Add support to insert*/
+					 curr_char = getchars();
+            	     usart_tx(&usart1_handle,(uint8_t*)"\e[2~",4);
+    			}
+				else if (curr_char == '3') { //Delete                 /*Add support to delete*/
+					curr_char = getchars();
+					usart_tx(&usart1_handle,(uint8_t*)"\e[3~",4);
+				}
+				else if (curr_char == '5') { //Page Up
+					curr_char = getchars();
+					usart_tx(&usart1_handle,(uint8_t*)"\e[5~",4);
+				}
+				else if (curr_char == '6') {    //Page Down
+					curr_char = getchars();
+					usart_tx(&usart1_handle,(uint8_t*)"\e[6~",4);
+				}
+
+        }
         else {
+        	putchars(curr_char);
         	add_node(&list, curr_char);
         	listPtr = listPtr->next;
         }
@@ -84,14 +126,9 @@ void getline(char* rstring){
 	putchars('\r');
 
 	count = get_list_length(&list);
-	//print_list(list);
-	//putchars('\n');
-	//putchars('\r');
-	char number[5];
-	itoa(count, number,10);
-	putstring(number);
-	putchars('\n');
-	putchars('\r');
+	//char number[5];
+	//itoa(count, number,10);
+	//putstring(number);
 	conv_list_string(list, rstring);
 	del_list(&list);
 
@@ -151,6 +188,7 @@ int main(void) {
 
     while(1)
     {
+    	putchars('#');
     	getline(buff);
     	putstring(buff);
     }

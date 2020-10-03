@@ -11,6 +11,7 @@
 #include <stdint.h>
 
 #define _IO volatile
+#define __weak __attribute__((weak))
 
 
 /**********************************START:Processor Specific Details **********************************/

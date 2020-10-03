@@ -440,6 +440,33 @@ typedef struct {
 #define USART_SR_LBD        			8
 #define USART_SR_CTS        			9
 
+/*
+ * IRQ(Interrupt Request) Numbers of STM32F407x MCU
+ * NOTE: update these macros with valid values according to your MCU
+ * TODO: You may complete this list for other peripherals
+ */
+#define IRQ_NO_WWDG      0
+#define IRQ_NO_EXTI0 	 6
+#define IRQ_NO_EXTI1 	 7
+#define IRQ_NO_EXTI2 	 8
+#define IRQ_NO_EXTI3 	 9
+#define IRQ_NO_EXTI4 	 10
+#define IRQ_NO_EXTI9_5 	 23
+#define IRQ_NO_EXTI15_10 40
+#define IRQ_NO_SPI1		 35
+#define IRQ_NO_SPI2      36
+#define IRQ_NO_SPI3      51
+#define IRQ_NO_SPI4      84
+#define IRQ_NO_I2C1_EV   31
+#define IRQ_NO_I2C1_ER   32
+#define IRQ_NO_USART1	 37
+#define IRQ_NO_USART2	 38
+#define IRQ_NO_USART3	 39
+#define IRQ_NO_UART4	 52
+#define IRQ_NO_UART5	 53
+#define IRQ_NO_USART6	 71
+
+
 #include "stm32f446xx_gpio_driver.h"
 #include "stm32f446xx_usart_driver.h"
 #include "stm32f446xx_rcc_driver.h"
