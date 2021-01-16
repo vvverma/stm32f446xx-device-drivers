@@ -268,42 +268,17 @@ uint8_t usart_rx_it(usart_handle_t* pusart_handle, uint8_t *prxbuffer, uint32_t 
  */
 void usart_irq_interrup_config(uint8_t irq_number, uint8_t enordi) {
     if(enordi == ENABLE) {
-        if(irq_number <= 31) {
-            //program ISER0 register
-            *NVIC_ISER0 |= ( 1 << irq_number );
-        }
-        else if(irq_number > 31 && irq_number < 64 ) { //32 to 63{
-            //program ISER1 register
-            *NVIC_ISER1 |= ( 1 << (irq_number % 32) );
-        }
-        else if(irq_number >= 64 && irq_number < 96 ) {
-            //program ISER2 register //64 to 95
-            *NVIC_ISER3 |= ( 1 << (irq_number % 64) );
-        }
+    	nvic_enable_irq(irq_number);
     }
     else {
-        if(irq_number <= 31) {
-            //program ICER0 register
-            *NVIC_ICER0 |= ( 1 << irq_number );
-        }else if(irq_number > 31 && irq_number < 64 ) {
-            //program ICER1 register
-            *NVIC_ICER1 |= ( 1 << (irq_number % 32) );
-        }
-        else if(irq_number >= 6 && irq_number < 96 ) {
-            //program ICER2 register
-            *NVIC_ICER3 |= ( 1 << (irq_number % 64) );
-        }
+    	nvic_disable_irq(irq_number);
     }
 }
 
 
 void usart_irq_priority_config(uint8_t irq_number, uint32_t irq_priority) {
     //1. first lets find out the ipr register
-    uint8_t iprx = irq_number / 4;
-    uint8_t iprx_section  = irq_number %4 ;
-    uint8_t shift_amount = ( 8 * iprx_section) + ( 8 - NO_PR_BITS_IMPLEMENTED) ;
-
-    *(  NVIC_PR_BASE_ADDR + iprx ) |=  ( irq_priority << shift_amount );
+	nvic_set_priority_irq(irq_number, irq_priority);
 }
 
 

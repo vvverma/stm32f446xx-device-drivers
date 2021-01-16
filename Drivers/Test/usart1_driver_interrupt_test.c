@@ -106,7 +106,7 @@ int main(void) {
         while (usart_rx_it(&usart1_handle,(uint8_t*) rx_msg,10) != USART_READY );
         usart_tx(&usart1_handle,(uint8_t*)msg_start,strlen(msg_start));
 
-        while(rxCmplt != SET);
+        while(rxCmplt != SET){delay();}
         usart_tx(&usart1_handle,(uint8_t*)rx_msg,10);
 	    rxCmplt = RESET;
     }

@@ -187,7 +187,11 @@ uint32_t nvic_get_pending_irq(uint32_t irq_number){
  * priority level
  * */
 void nvic_set_priority_irq(uint32_t irq_number, uint32_t priority){
+    uint8_t iprx = irq_number / 4;
+    uint8_t iprx_section  = irq_number %4 ;
+    uint8_t shift_amount = ( 8 * iprx_section) + ( 8 - NO_PR_BITS_IMPLEMENTED) ;
 
+    *(  NVIC_PR_BASE_ADDR + iprx ) |=  ( priority << shift_amount );
 }
 
 /*

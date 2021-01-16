@@ -19,6 +19,10 @@ char msg_start[1] = "#";
 char rx_msg[1024];
 
 
+char* supported_command[] = {"gpio", "help"};
+
+
+
 void conv_list_string(node* list,char* rstring){
 	int i = 0;
 	node* mover;
@@ -48,8 +52,16 @@ void putstring(char* str_value){
     putchars('\r');
 
 }
+
 char* getstring(int* num_bytes){
 	return 0;
+}
+
+void parse_command(char* command){
+	if (strncmp("help", command, 4) == 0)
+	{
+		putstring("Help Command Used");
+	}
 }
 
 
@@ -126,9 +138,6 @@ void getline(char* rstring){
 	putchars('\r');
 
 	count = get_list_length(&list);
-	//char number[5];
-	//itoa(count, number,10);
-	//putstring(number);
 	conv_list_string(list, rstring);
 	del_list(&list);
 
@@ -177,8 +186,13 @@ void delay(void) {
 
 
 int main(void) {
+	dma_handle_t dma_test;
 
-	char buff[256];
+	dma_test.dma_config.stream_number = 0;
+	dma_test.pdmax = DMA1;
+    dma_peripheral_clk(DMA1, ENABLE);
+    dma_init(&dma_test);
+	char command[256];
     usart1_gpio_init();
 
     usart1_init();
@@ -189,8 +203,9 @@ int main(void) {
     while(1)
     {
     	putchars('#');
-    	getline(buff);
-    	putstring(buff);
+    	getline(command);
+        parse_command(command);
+    	//putstring(command);
     }
 
     return 0;

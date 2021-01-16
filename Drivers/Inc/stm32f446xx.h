@@ -228,6 +228,35 @@ typedef struct {
 
 #define RCC		((rcc_reg_def_t* ) RCC_BASEADDR)
 
+
+
+/* Direct Memory Access Controller Register Map*/
+typedef struct {
+	_IO uint32_t dma_sxcr;         /* DMA stream x configuration register      Address offset:0x0 0x10 */
+	_IO uint32_t dma_sxndtr;    /* DMA stream x number of data register        Address offset:0x04 0x14 */
+	_IO uint32_t dma_sxpar;     /* DMA stream x peripheral address register 	  Address offset:0x08 0x18 */
+	_IO uint32_t dma_sxm0ar;    /* DMA stream x memory 0 address register  	  Address offset: C0x1C */
+	_IO uint32_t dma_sxm1ar;    /* DMA stream x memory 1 address register      Address offset:10 0x20 */
+	_IO uint32_t dma_sxfcr;     /* DMA stream x FIFO Control Register      	  Address offset: 14 0x24 */
+}streamx;
+
+typedef struct {
+	_IO uint32_t dma_lisp;         /* DMA low interrupt status register           Address offset: 0x00 */
+	_IO uint32_t dma_hisr;         /* DMA high interrupt status register          Address offset: 0x04 */
+	_IO uint32_t dma_lifcr;        /* DMA low interrupt flag clear register       Address offset: 0x08 */
+	_IO uint32_t dma_hifcr;        /* DMA high interrupt flag clear register      Address offset: 0x0C */
+	streamx streams[8];
+	//_IO uint32_t dma_sxcr[8];         /* DMA stream x configuration register      Address offset: 0x10 */
+	//_IO uint32_t dma_sxndtr[8];    /* DMA stream x number of data register        Address offset: 0x14 */
+	//_IO uint32_t dma_sxpar[8];     /* DMA stream x peripheral address register 	  Address offset: 0x18 */
+	//_IO uint32_t dma_sxm0ar[8];    /* DMA stream x memory 0 address register  	  Address offset: 0x1C */
+	//_IO uint32_t dma_sxm1ar[8];    /* DMA stream x memory 1 address register      Address offset: 0x20 */
+	//_IO uint32_t dma_sxfcr[8];     /* DMA stream x FIFO Control Register      	  Address offset: 0x24 */
+} dmax_reg_def_t;
+
+#define DMA1	((dmax_reg_def_t* ) DMA1_BASEADDR)
+#define DMA2	((dmax_reg_def_t* ) DMA2_BASEADDR)
+
 /*
  *  GPIOx Peripheral clock Enable
  * */
@@ -259,11 +288,38 @@ typedef struct {
  * */
 #define CRC_PCLK_EN()			(RCC->ahb1_enr |= (1<<12))
 
-
 /*
  *  CRC Peripheral clock Disable
  * */
 #define CRC_PCLK_DI()			(RCC->ahb1_enr &= ~(1<<12))
+
+
+/*
+ *  DMA1 Peripheral clock Enable
+ * */
+#define DMA1_PCLK_EN()			(RCC->ahb1_enr |= (1<<21))
+
+/*
+ *  DMA1 Peripheral clock Disable
+ * */
+#define DMA1_PCLK_DI()			(RCC->ahb1_enr &= ~(1<<21))
+
+
+/*
+ *  DMA2 Peripheral clock Enable
+ * */
+#define DMA2_PCLK_EN()			(RCC->ahb1_enr |= (1<<22))
+
+/*
+ *  DMA1 Peripheral clock Disable
+ * */
+#define DMA2_PCLK_DI()			(RCC->ahb1_enr &= ~(1<<22))
+
+
+/*
+ *  CRC Peripheral clock Enable
+ * */
+#define CRC_PCLK_EN()			(RCC->ahb1_enr |= (1<<12))
 
 
 /*
@@ -445,31 +501,52 @@ typedef struct {
  * NOTE: update these macros with valid values according to your MCU
  * TODO: You may complete this list for other peripherals
  */
-#define IRQ_NO_WWDG      0
-#define IRQ_NO_EXTI0 	 6
-#define IRQ_NO_EXTI1 	 7
-#define IRQ_NO_EXTI2 	 8
-#define IRQ_NO_EXTI3 	 9
-#define IRQ_NO_EXTI4 	 10
-#define IRQ_NO_EXTI9_5 	 23
-#define IRQ_NO_EXTI15_10 40
-#define IRQ_NO_SPI1		 35
-#define IRQ_NO_SPI2      36
-#define IRQ_NO_SPI3      51
-#define IRQ_NO_SPI4      84
-#define IRQ_NO_I2C1_EV   31
-#define IRQ_NO_I2C1_ER   32
-#define IRQ_NO_USART1	 37
-#define IRQ_NO_USART2	 38
-#define IRQ_NO_USART3	 39
-#define IRQ_NO_UART4	 52
-#define IRQ_NO_UART5	 53
-#define IRQ_NO_USART6	 71
+#define IRQ_NO_WWDG               0
+#define IRQ_NO_EXTI0 	          6
+#define IRQ_NO_EXTI1 	          7
+#define IRQ_NO_EXTI2 	          8
+#define IRQ_NO_EXTI3 	          9
+#define IRQ_NO_EXTI4 	         10
+#define IRQ_NO_DMA1_STREAM0 	 11
+#define IRQ_NO_DMA1_STREAM1 	 12
+#define IRQ_NO_DMA1_STREAM2 	 13
+#define IRQ_NO_DMA1_STREAM3 	 14
+#define IRQ_NO_DMA1_STREAM4 	 15
+#define IRQ_NO_DMA1_STREAM5 	 16
+#define IRQ_NO_DMA1_STREAM6 	 17
+#define IRQ_NO_EXTI9_5 	         23
+#define IRQ_NO_I2C1_EV           31
+#define IRQ_NO_I2C1_ER           32
+#define IRQ_NO_SPI1		         35
+#define IRQ_NO_SPI2              36
+#define IRQ_NO_USART1	         37
+#define IRQ_NO_USART2	         38
+#define IRQ_NO_USART3	         39
+#define IRQ_NO_EXTI15_10         40
+#define IRQ_NO_DMA1_STREAM7 	 47
+#define IRQ_NO_SPI3              51
+#define IRQ_NO_UART4	         52
+#define IRQ_NO_UART5	         53
+#define IRQ_NO_DMA2_STREAM0 	 56
+#define IRQ_NO_DMA2_STREAM1 	 57
+#define IRQ_NO_DMA2_STREAM2 	 58
+#define IRQ_NO_DMA2_STREAM3 	 59
+#define IRQ_NO_DMA2_STREAM4 	 60
+#define IRQ_NO_DMA2_STREAM5 	 68
+#define IRQ_NO_DMA2_STREAM6 	 69
+#define IRQ_NO_DMA3_STREAM7 	 70
+#define IRQ_NO_USART6	         71
+#define IRQ_NO_SPI4              84
 
 
+
+
+#include "arm_cortex_m4_nvic_driver.h"
 #include "stm32f446xx_gpio_driver.h"
 #include "stm32f446xx_usart_driver.h"
 #include "stm32f446xx_rcc_driver.h"
+#include "stm32f446xx_dma_driver.h"
+
 
 
 #endif /* INC_STM32F446XX_H_ */

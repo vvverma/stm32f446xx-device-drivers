@@ -8,7 +8,7 @@
 #ifndef INC_STM32F446XX_LCD_DRIVER_H_
 #define INC_STM32F446XX_LCD_DRIVER_H_
 
-#include "../Inc/stm32f446xx_gpio_driver.h"
+#include "stm32f446xx.h"
 
 typedef struct {
 	/*Control Pins*/
