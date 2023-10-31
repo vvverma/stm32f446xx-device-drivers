@@ -257,6 +257,27 @@ typedef struct {
 #define DMA1	((dmax_reg_def_t* ) DMA1_BASEADDR)
 #define DMA2	((dmax_reg_def_t* ) DMA2_BASEADDR)
 
+
+/* *  I2C Peripheral Register Map * */
+typedef struct {
+  _IO uint32_t cr1;
+  _IO uint32_t cr2;
+  _IO uint32_t oar1;
+  _IO uint32_t oar2;
+  _IO uint32_t dr;
+  _IO uint32_t sr1;
+  _IO uint32_t sr2;
+  _IO uint32_t ccr;
+  _IO uint32_t trise;
+  _IO uint32_t fltr;
+} i2cx_reg_def_t;
+
+#define I2C1    ((i2cx_reg_def_t*) I2C1_BASEADDR)
+#define I2C2    ((i2cx_reg_def_t*) I2C2_BASEADDR)
+#define I2C3    ((i2cx_reg_def_t*) I2C3_BASEADDR)
+
+
+
 /*
  *  GPIOx Peripheral clock Enable
  * */
@@ -546,6 +567,7 @@ typedef struct {
 #include "stm32f446xx_usart_driver.h"
 #include "stm32f446xx_rcc_driver.h"
 #include "stm32f446xx_dma_driver.h"
+#include "stm32f446xx_i2c_driver.h"
 
 
 
