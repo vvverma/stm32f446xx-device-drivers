@@ -1,3 +1,5 @@
 /Debug/
 .cproject
 .settings/*
+stm32f446xx_drivers Debug.launch
+stm32f446xx_drivers.launch
