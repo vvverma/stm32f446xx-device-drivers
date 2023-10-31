@@ -185,8 +185,116 @@ void delay(void) {
 }
 
 
+void init_i2c_gpio(){
+
+		gpio_handle_t I2CPins;
+		I2CPins.pgpiox = GPIOB;
+		I2CPins.gpio_pinconfig.pin_mode = GPIO_PIN_MODE_ALT_FUN;
+		I2CPins.gpio_pinconfig.pin_optype = GPIO_OP_OPEN_DRAIN;
+
+		I2CPins.gpio_pinconfig.pin_pupd_ctrl = GPIO_PIN_PU;
+		I2CPins.gpio_pinconfig.pin_altfun_mode= 4;
+		I2CPins.gpio_pinconfig.pin_speed = GPIO_PIN_SPEED_FAST;
+
+		//scl
+		I2CPins.gpio_pinconfig.pin_number = GPIO_PIN_8;
+		gpio_init(&I2CPins);
+
+
+		//sda
+		//Note : since we found a glitch on PB9 , you can also try with PB7
+		I2CPins.gpio_pinconfig.pin_number = GPIO_PIN_9;
+
+		gpio_init(&I2CPins);
+}
+
+
+void GPIO_ButtonInit(void)
+{
+gpio_handle_t GPIOBtn;
+
+//this is btn gpio configuration
+GPIOBtn.pgpiox = GPIOC;
+GPIOBtn.gpio_pinconfig.pin_number = GPIO_PIN_13;
+GPIOBtn.gpio_pinconfig.pin_mode = GPIO_PIN_MODE_IN;
+GPIOBtn.gpio_pinconfig.pin_speed = GPIO_PIN_SPEED_FAST;
+GPIOBtn.gpio_pinconfig.pin_pupd_ctrl = GPIO_PIN_NO_PUPD;
+
+gpio_init(&GPIOBtn);
+
+}
+
+i2c_handle_t i2c_test;
+
+//#define SSD1306_WRITECOMMAND(data) 	i2c_writeByte(0x3c,0x00,data)
+#define SSD1306_WRITECOMMAND(data) i2c_master_send(&i2c_test,(uint8_t)0x00,(uint8_t)0x3c,data);
+//#define SSD1306_WRITEDATA(data) 	i2c_writeByte(0x3c,0x40,data)
+#define SSD1306_WRITEDATA(data) i2c_master_send(&i2c_test,(uint8_t)0x40,(uint8_t)0x3c,data);
+
+
+
 int main(void) {
+	//uint8_t buffer [] = {0x00,0xAE,
+	//		              0x00,0xAF,
+	//					 0x40,0xFF,0x40,0x00,0x40,0xFF,0x40,0x00,0x40,0xFF,0x40,0x00};
 	dma_handle_t dma_test;
+	i2c_test.pi2cx = I2C1;
+	i2c_test.i2c_pinconfig.ack_en=1;
+	i2c_test.i2c_pinconfig.speed_mode = I2C_SCL_SPEED_SM;
+	i2c_test.i2c_pinconfig.duty = 0;
+
+	GPIO_ButtonInit();
+    init_i2c_gpio();
+
+	i2c_init(&i2c_test);
+
+	i2c_peripheral_control(i2c_test.pi2cx,ENABLE);
+
+	//wait till button is pressed
+    //while(gpio_read_pin(GPIOC,GPIO_PIN_13)==0x1);
+    delay();
+
+    delay();
+	SSD1306_WRITECOMMAND(0xAE); //display off
+	SSD1306_WRITECOMMAND(0x20); //Set Memory Addressing Mode
+	SSD1306_WRITECOMMAND(0x10); //00,Horizontal Addressing Mode;01,Vertical Addressing Mode;10,Page Addressing Mode (RESET);11,Invalid
+	SSD1306_WRITECOMMAND(0xB0); //Set Page Start Address for Page Addressing Mode,0-7
+	SSD1306_WRITECOMMAND(0xC8); //Set COM Output Scan Direction
+	SSD1306_WRITECOMMAND(0x00); //---set low column address
+	SSD1306_WRITECOMMAND(0x10); //---set high column address
+	SSD1306_WRITECOMMAND(0x40); //--set start line address
+	SSD1306_WRITECOMMAND(0x81); //--set contrast control register
+	SSD1306_WRITECOMMAND(0xFF);
+	SSD1306_WRITECOMMAND(0xA1); //--set segment re-map 0 to 127
+	SSD1306_WRITECOMMAND(0xA6); //--set normal display
+	SSD1306_WRITECOMMAND(0xA8); //--set multiplex ratio(1 to 64)
+	SSD1306_WRITECOMMAND(0x3F); //
+	SSD1306_WRITECOMMAND(0xA4); //0xa4,Output follows RAM content;0xa5,Output ignores RAM content
+	SSD1306_WRITECOMMAND(0xD3); //-set display offset
+	SSD1306_WRITECOMMAND(0x00); //-not offset
+	SSD1306_WRITECOMMAND(0xD5); //--set display clock divide ratio/oscillator frequency
+	SSD1306_WRITECOMMAND(0xF0); //--set divide ratio
+	SSD1306_WRITECOMMAND(0xD9); //--set pre-charge period
+	SSD1306_WRITECOMMAND(0x22); //
+	SSD1306_WRITECOMMAND(0xDA); //--set com pins hardware configuration
+	SSD1306_WRITECOMMAND(0x12);
+	SSD1306_WRITECOMMAND(0xDB); //--set vcomh
+	SSD1306_WRITECOMMAND(0x20); //0x20,0.77xVcc
+	SSD1306_WRITECOMMAND(0x8D); //--set DC-DC enable
+	SSD1306_WRITECOMMAND(0x14); //
+	SSD1306_WRITECOMMAND(0xAF); //--turn on SSD1306 panel
+
+	for (int i = 0; i < 8; i++) {
+		for(int j = 0 ; i <128 ; j++) {
+		  SSD1306_WRITEDATA(0xAA); //--turn on SSD1306 panel
+		  SSD1306_WRITEDATA(0x55); //--turn on SSD1306 panel
+		}
+	}
+	//i2c_master_send(&i2c_test,(uint8_t*)buffer,16, 0x3c);
+
+
+	volatile int i = 1;
+	while(i);
 
 	dma_test.dma_config.stream_number = 0;
 	dma_test.pdmax = DMA1;
